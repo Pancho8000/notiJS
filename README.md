@@ -193,6 +193,78 @@ curl http://localhost:3000/notifications/events
 
 ---
 
+## Configuración por variables de entorno
+
+El comportamiento del microservicio se puede ajustar sin tocar código usando variables de entorno.
+
+### Almacenamiento de eventos
+
+- `EVENT_STORE`
+  - `file` (valor por defecto): guarda los eventos en un archivo JSON.
+  - `memory`: guarda los eventos sólo en memoria.
+- `EVENT_FILE_PATH`
+  - Ruta al archivo JSON donde se persistirán los eventos.
+  - Por defecto: `./data/events.json` en el directorio del proyecto.
+
+Ejemplos:
+
+- Usar almacenamiento en archivo (por defecto):
+
+  ```bash
+  npm run dev
+  ```
+
+- Forzar almacenamiento sólo en memoria (los eventos se pierden al reiniciar):
+
+  ```bash
+  # CMD (Windows)
+  set EVENT_STORE=memory && npm run dev
+
+  # PowerShell
+  $env:EVENT_STORE="memory"; npm run dev
+  ```
+
+### Notificador de “correo” simulado
+
+Además del log normal de consola, puedes activar un notificador que simula el envío de correos.
+
+- `EMAIL_ENABLED`
+  - `true`: activa el notificador de correo simulado.
+  - `false` (valor por defecto): sólo notifica por consola.
+- `EMAIL_TO`
+  - Dirección de correo destino simulada.
+  - Por defecto: `dev@example.com`.
+
+Ejemplos:
+
+- Activar correo simulado con el correo por defecto:
+
+  ```bash
+  # CMD
+  set EMAIL_ENABLED=true && npm run dev
+
+  # PowerShell
+  $env:EMAIL_ENABLED="true"; npm run dev
+  ```
+
+- Activar correo simulado con un destinatario concreto:
+
+  ```bash
+  # CMD
+  set EMAIL_ENABLED=true && set EMAIL_TO=tu@correo.com && npm run dev
+
+  # PowerShell
+  $env:EMAIL_ENABLED="true"; $env:EMAIL_TO="tu@correo.com"; npm run dev
+  ```
+
+Cuando el correo simulado está activo, cada evento generará un log adicional:
+
+```text
+[email-sim] to=tu@correo.com subject="[notiJS] venta.realizada (#1)" body={"orderId":"123","monto":99.9}
+```
+
+---
+
 ## Cómo extenderlo
 
 Ideas para evolucionar este microservicio y mostrar más cosas en tu GitHub:
