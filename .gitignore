@@ -1,0 +1,21 @@
+# Node/TypeScript
+node_modules/
+dist/
+coverage/
+tsconfig.tsbuildinfo
+.eslintcache
+
+# Logs y temporales
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.tmp/
+
+# Entornos
+.env
+.env.*
+
+# SO
+.DS_Store
+Thumbs.db
