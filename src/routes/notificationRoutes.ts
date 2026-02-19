@@ -2,11 +2,26 @@ import { Router } from "express";
 import { NotificationService } from "../services/NotificationService";
 import { InMemoryEventRepository } from "../services/InMemoryEventRepository";
 import { ConsoleNotifier } from "../services/ConsoleNotifier";
+import { FileEventRepository } from "../services/FileEventRepository";
+import { MultiNotifier } from "../services/MultiNotifier";
+import { EmailSimulatedNotifier } from "../services/EmailSimulatedNotifier";
+import { getConfig } from "../config";
 
 const router = Router();
 
-const eventRepository = new InMemoryEventRepository();
-const notifier = new ConsoleNotifier();
+const cfg = getConfig();
+
+const eventRepository =
+  cfg.eventStore === "file"
+    ? new FileEventRepository(cfg.eventFilePath)
+    : new InMemoryEventRepository();
+
+const baseNotifier = new ConsoleNotifier();
+const notifier =
+  cfg.emailEnabled
+    ? new MultiNotifier([baseNotifier, new EmailSimulatedNotifier(cfg.emailTo)])
+    : baseNotifier;
+
 const notificationService = new NotificationService(eventRepository, notifier);
 
 router.post("/events", async (req, res) => {
